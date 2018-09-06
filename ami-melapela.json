@@ -1,0 +1,46 @@
+{
+  "variables": {
+    "access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "eu-west-2",
+    "source_ami": "ami-c7ab5fa0",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "ami-melapela-{{timestamp}}",
+    "launch_block_device_mappings": [
+    {
+      "device_name": "/dev/sda1",
+      "volume_size": 40,
+      "volume_type": "gp2",
+      "delete_on_termination": true
+    }
+  ],
+  "ami_block_device_mappings": [
+    {
+      "device_name": "/dev/sdb",
+      "virtual_name": "ephemeral0"
+    },
+    {
+      "device_name": "/dev/sdc",
+      "virtual_name": "ephemeral1"
+    }
+  ],
+  "tags": {
+      "OS_Version": "Ubuntu",
+      "ToBeDeleted": "True",
+      "Release": "Latest",
+      "Base_AMI_Name": "{{ .SourceAMIName }}",
+      "Extra": "{{ .SourceAMITags.TagName }}"
+    }
+  }],
+  "provisioners": [
+  {
+    "type": "shell",
+    "script": "ami-provision.sh"
+  }]
+}
