@@ -1,0 +1,50 @@
+---
+- hosts: localhost
+  connection: local
+  sudo: yes
+  tasks:
+  - name: Install list of packages
+    apt:
+      name: "{{item}}"
+      state: latest
+    with_items:
+      - htop
+      - netcat
+      - unzip
+      - curl
+      - sudo
+      - bash-completion
+      - tree
+      - colordiff
+      - ntp
+      - telnet
+      - git
+    ignore_errors: yes
+    
+  - name: Ensure repository key is installed
+    apt_key:
+      id: "58118E89F3A912897C070ADBF76221572C52609D"
+      keyserver: "hkp://p80.pool.sks-keyservers.net:80"
+      state: present
+
+  - name: Ensure docker registry is available
+    apt_repository:
+      repo: 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+      state: present
+
+  - name: ensure docker and dependencies are installed
+    apt:
+      name: docker-engine
+      update_cache: yes
+
+  - name: Ensure docker can use insecure registries in 10.11.0.0/16
+    lineinfile:
+      dest: /etc/default/docker
+      regexp: ^DOCKER_OPTS
+      line: DOCKER_OPTS='--insecure-registry 10.11.0.0/16'
+
+  - name: Restart Docker service
+    service:
+      name: docker
+      state: restarted
+...
