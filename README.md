@@ -4,7 +4,16 @@ The repo contains the basic components you need for building and provisioning a 
 
 ## Usage
 
-Follow [the instructions from _Hashicorp_](https://www.packer.io/intro/getting-started/install.html) for installing _PAcker_
+Follow [the instructions from _Hashicorp_](https://www.packer.io/intro/getting-started/install.html) for installing _Packer_
+
+Define your access and secret keys for accessing your AWS account:
+
+```
+ubuntu@devops-box$ export AWS_ACCESS_KEY_ID=<your-access-key>
+ubuntu@devops-box$ export AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
+```
+
+Invoke packer for building your image:
 
 ```
 ubuntu@devops-box$ packer build ami-melapela.json
